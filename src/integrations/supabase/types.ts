@@ -55,24 +55,33 @@ export type Database = {
           company_id: string
           created_at: string
           id: string
+          is_synthetic: boolean
           kind: string
+          level: number | null
           name: string
+          reduced_code: string | null
         }
         Insert: {
           code?: string | null
           company_id: string
           created_at?: string
           id?: string
+          is_synthetic?: boolean
           kind?: string
+          level?: number | null
           name: string
+          reduced_code?: string | null
         }
         Update: {
           code?: string | null
           company_id?: string
           created_at?: string
           id?: string
+          is_synthetic?: boolean
           kind?: string
+          level?: number | null
           name?: string
+          reduced_code?: string | null
         }
         Relationships: [
           {
@@ -344,6 +353,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_company_setup: {
+        Args: {
+          p_bank_accounts: Json
+          p_categories: Json
+          p_cnpj: string | null
+          p_name: string
+          p_notes: string | null
+        }
+        Returns: string
+      }
       import_statement: {
         Args: {
           p_account_label: string
