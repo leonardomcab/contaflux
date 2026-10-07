@@ -51,12 +51,13 @@ function RulesPage() {
   const [reprocessing, setReprocessing] = useState(false);
 
   const categories = useQuery({
-    queryKey: ["categories", companyId],
+    queryKey: ["categories", companyId, "analytic"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("categories")
-        .select("id, code, name")
+        .select("id, code, name, kind")
         .eq("company_id", companyId)
+        .eq("is_synthetic", false)
         .order("name");
       if (error) throw error;
       return data;

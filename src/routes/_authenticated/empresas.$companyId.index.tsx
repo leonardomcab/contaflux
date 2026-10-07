@@ -70,12 +70,13 @@ function TransactionsPage() {
   });
 
   const categories = useQuery({
-    queryKey: ["categories", companyId],
+    queryKey: ["categories", companyId, "analytic"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("categories")
         .select("id, code, name, kind")
         .eq("company_id", companyId)
+        .eq("is_synthetic", false)
         .order("name");
       if (error) throw error;
       return data;
@@ -89,9 +90,12 @@ function TransactionsPage() {
     queryFn: async () => {
       let query = supabase
         .from("transactions")
-        .select("id, posted_at, description, memo, amount, category_id, classified_by, account_id", {
-          count: "exact",
-        })
+        .select(
+          "id, posted_at, description, memo, amount, category_id, classified_by, account_id",
+          {
+            count: "exact",
+          },
+        )
         .eq("company_id", companyId);
 
       if (from) query = query.gte("posted_at", from);
@@ -194,7 +198,10 @@ function TransactionsPage() {
           value={loadingTotals ? "…" : formatCurrency(totals?.debit ?? 0)}
           tone="debit"
         />
-        <SummaryCard label="Sem categoria" value={loadingTotals ? "…" : String(totals?.pending ?? 0)} />
+        <SummaryCard
+          label="Sem categoria"
+          value={loadingTotals ? "…" : String(totals?.pending ?? 0)}
+        />
       </div>
 
       <Card>
