@@ -1,0 +1,29 @@
+---
+description: Fluxo de git do Contaflux e exigência de autorização do usuário
+alwaysApply: true
+---
+
+# Fluxo de git
+
+## Sempre pedir permissão
+Antes de qualquer comando que altere o repositório local ou remoto, pare, mostre o
+comando exato, explique o efeito em uma frase e espere o "ok" do usuário. Isso inclui:
+checkout/switch -b, branch, add, rm --cached, commit, merge, rebase, stash, tag, pull, push
+e abertura de pull request. Comandos só de leitura (status, diff, log, show, fetch) podem
+rodar sem pedir.
+
+## Branches
+- Nunca commitar direto na `main`; mudanças chegam por pull request.
+- Criar branches a partir da `main` atualizada: `git fetch origin` e `git pull --ff-only`.
+- Nome: `<tipo>/<descricao-curta>` em minúsculas, com hífen e sem acento
+  (ex.: `feat/assistente-cadastro`, `fix/importacao-ofx`).
+
+## Commits
+- Conventional Commits em português: `feat:`, `fix:`, `chore:`, `docs:`, `test:`, `refactor:`,
+  com escopo opcional (ex.: `feat(db): adiciona RPC create_company_setup`).
+- Um assunto por commit. Antes de propor o commit, revisar `git diff --staged` e rodar
+  `npm run lint` e `npm test`.
+- Nunca versionar `.env*`, chaves ou dados reais de clientes. PDFs reais ficam em `examples/privado/`.
+
+## Proibido sem pedido explícito do usuário
+`push --force`, `reset --hard`, `clean -fd`, reescrever histórico já enviado e apagar branches remotas.

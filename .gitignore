@@ -37,3 +37,6 @@ dist-ssr
 # Supabase
 supabase/.temp/
 supabase/.branches/
+
+# PDFs reais de clientes (o fictício em examples/ é versionado como arquivo de teste)
+examples/privado/
