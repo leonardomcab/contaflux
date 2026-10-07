@@ -142,7 +142,10 @@ export function AppSidebar({ email, onSignOut }: { email: string; onSignOut: () 
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton tooltip={email} className="cursor-default hover:bg-transparent active:bg-transparent">
+            <SidebarMenuButton
+              tooltip={email}
+              className="cursor-default hover:bg-transparent active:bg-transparent"
+            >
               <UserRound />
               <span className="truncate text-sidebar-foreground/70">{email}</span>
             </SidebarMenuButton>

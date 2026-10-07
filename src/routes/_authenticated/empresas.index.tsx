@@ -4,27 +4,19 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Building2, Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { CompanyWizard } from "@/components/company-wizard/company-wizard";
 import { ConfirmDeleteDialog, countRows } from "@/components/confirm-delete-dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/_authenticated/empresas/")({
   head: () => ({
     meta: [
       { title: "Empresas — Contaflux" },
-      { name: "description", content: "Clientes do escritório com extratos importados no Contaflux." },
+      {
+        name: "description",
+        content: "Clientes do escritório com extratos importados no Contaflux.",
+      },
       { property: "og:title", content: "Empresas — Contaflux" },
       {
         property: "og:description",
@@ -38,9 +30,6 @@ export const Route = createFileRoute("/_authenticated/empresas/")({
 function CompaniesPage() {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [cnpj, setCnpj] = useState("");
-  const [notes, setNotes] = useState("");
 
   const companies = useQuery({
     queryKey: ["companies"],
@@ -52,28 +41,6 @@ function CompaniesPage() {
       if (error) throw error;
       return data;
     },
-  });
-
-  const createCompany = useMutation({
-    mutationFn: async () => {
-      const { data: userData } = await supabase.auth.getUser();
-      const { error } = await supabase.from("companies").insert({
-        name,
-        cnpj: cnpj || null,
-        notes: notes || null,
-        created_by: userData.user?.id ?? null,
-      });
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      toast.success("Empresa cadastrada");
-      setOpen(false);
-      setName("");
-      setCnpj("");
-      setNotes("");
-      queryClient.invalidateQueries({ queryKey: ["companies"] });
-    },
-    onError: (error: Error) => toast.error("Erro ao salvar", { description: error.message }),
   });
 
   const [toDelete, setToDelete] = useState<{ id: string; name: string } | null>(null);
@@ -100,42 +67,11 @@ function CompaniesPage() {
             Escolha um cliente para importar extratos e classificar lançamentos.
           </p>
         </div>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Nova empresa
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Nova empresa</DialogTitle>
-              <DialogDescription>Cadastre um cliente do escritório.</DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="company-name">Nome</Label>
-                <Input id="company-name" value={name} onChange={(e) => setName(e.target.value)} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="company-cnpj">CNPJ</Label>
-                <Input id="company-cnpj" value={cnpj} onChange={(e) => setCnpj(e.target.value)} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="company-notes">Observações</Label>
-                <Textarea id="company-notes" value={notes} onChange={(e) => setNotes(e.target.value)} />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button
-                onClick={() => createCompany.mutate()}
-                disabled={!name.trim() || createCompany.isPending}
-              >
-                Salvar
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <Button onClick={() => setOpen(true)}>
+          <Plus className="mr-2 h-4 w-4" />
+          Nova empresa
+        </Button>
+        <CompanyWizard open={open} onOpenChange={setOpen} />
       </div>
 
       {companies.isLoading ? (
@@ -155,7 +91,9 @@ function CompaniesPage() {
                       {company.name}
                     </Link>
                   </CardTitle>
-                  <p className="num mt-1 text-xs text-muted-foreground">{company.cnpj ?? "sem CNPJ"}</p>
+                  <p className="num mt-1 text-xs text-muted-foreground">
+                    {company.cnpj ?? "sem CNPJ"}
+                  </p>
                 </div>
                 <Button
                   variant="ghost"
