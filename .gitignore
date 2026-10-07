@@ -40,3 +40,10 @@ supabase/.branches/
 
 # PDFs reais de clientes (o fictício em examples/ é versionado como arquivo de teste)
 examples/privado/
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
