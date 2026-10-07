@@ -75,7 +75,16 @@ function ExportPage() {
       }
 
       const rows: (string | number | null)[][] = [
-        ["Data", "Conta bancária", "Descrição", "Histórico", "Valor", "Tipo", "Conta contábil", "Classificação"],
+        [
+          "Data",
+          "Conta bancária",
+          "Descrição",
+          "Histórico",
+          "Valor",
+          "Tipo",
+          "Conta contábil",
+          "Classificação",
+        ],
         ...data.map((row) => [
           row.posted_at,
           row.bank_accounts?.label ?? "",
@@ -111,8 +120,8 @@ function ExportPage() {
         <CardHeader>
           <CardTitle>Exportar lançamentos</CardTitle>
           <CardDescription>
-            Gera um arquivo CSV (separado por ponto e vírgula) pronto para abrir no Excel ou importar
-            no sistema contábil.
+            Gera um arquivo CSV (separado por ponto e vírgula) pronto para abrir no Excel ou
+            importar no sistema contábil.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
