@@ -11,6 +11,7 @@ import {
   Wand2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { BrandMark } from "@/components/brand-mark";
 import { ThemeIcon, ThemeMenu } from "@/components/theme-toggle";
 import {
   Sidebar,
@@ -73,8 +74,8 @@ export function AppSidebar({ email, onSignOut }: { email: string; onSignOut: () 
           <SidebarMenuItem>
             <SidebarMenuButton asChild size="lg" tooltip="Contaflux">
               <Link to="/empresas" onClick={closeOnMobile}>
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-sidebar-primary font-serif text-base font-semibold text-sidebar-primary-foreground">
-                  C
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
+                  <BrandMark className="size-6" />
                 </span>
                 <span className="font-serif text-xl font-semibold">Contaflux</span>
               </Link>
