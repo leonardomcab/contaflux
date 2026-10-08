@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
   cnpjDigits,
   draftsFromSuggestions,
+  formatCnpj,
+  isCnpjCompleteOrEmpty,
   newBankAccountDraft,
   validateBankAccounts,
 } from "./company-setup";
@@ -37,6 +39,36 @@ describe("validateBankAccounts", () => {
     expect(errors.get(b.key)).toMatch(/"A"/);
     expect(errors.has(c.key)).toBe(false);
     expect(errors.get(d.key)).toMatch(/sem banco e número/);
+  });
+});
+
+describe("formatCnpj", () => {
+  it("aplica a máscara aos poucos conforme a digitação", () => {
+    expect(formatCnpj("11")).toBe("11");
+    expect(formatCnpj("112")).toBe("11.2");
+    expect(formatCnpj("11222333")).toBe("11.222.333");
+    expect(formatCnpj("112223330")).toBe("11.222.333/0");
+    expect(formatCnpj("1122233300018")).toBe("11.222.333/0001-8");
+    expect(formatCnpj("11222333000181")).toBe("11.222.333/0001-81");
+  });
+
+  it("descarta o que passa de 14 caracteres e ignora pontuação colada", () => {
+    expect(formatCnpj("11.222.333/0001-8199")).toBe("11.222.333/0001-81");
+    expect(formatCnpj(" 11 222 333 0001 81 ")).toBe("11.222.333/0001-81");
+    expect(formatCnpj(null)).toBe("");
+  });
+
+  it("aceita CNPJ alfanumérico com dígitos verificadores numéricos", () => {
+    expect(formatCnpj("12abc34501de35")).toBe("12.ABC.345/01DE-35");
+    expect(formatCnpj("12ABC34501DEXY")).toBe("12.ABC.345/01DE");
+  });
+});
+
+describe("isCnpjCompleteOrEmpty", () => {
+  it("aceita vazio ou completo e recusa incompleto", () => {
+    expect(isCnpjCompleteOrEmpty("")).toBe(true);
+    expect(isCnpjCompleteOrEmpty("11.222.333/0001-81")).toBe(true);
+    expect(isCnpjCompleteOrEmpty("11.222.333/0001")).toBe(false);
   });
 });
 
