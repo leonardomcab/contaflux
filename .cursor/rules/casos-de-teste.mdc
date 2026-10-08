@@ -1,0 +1,14 @@
+---
+description: Manter os roteiros de docs/testcases alinhados às mudanças de comportamento
+alwaysApply: true
+---
+
+# Casos de teste
+
+Toda mudança visível ao usuário (textos, etapas, validações, botões, mensagens) deve vir
+acompanhada da atualização dos roteiros em `docs/testcases/`, no mesmo PR.
+
+- Prefira ajustar os casos existentes (passos, dados de teste, resultados esperados).
+- Só crie um caso novo quando o comportamento não couber em nenhum caso existente.
+- Ao renomear um caso, atualize também o título e a âncora em `docs/testcases/index.md`.
+- Use apenas dados fictícios nos roteiros.
