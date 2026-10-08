@@ -1,0 +1,9 @@
+# Força LF no checkout em qualquer sistema, sobrepondo o core.autocrlf de cada máquina.
+* text=auto eol=lf
+
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.ofx -text
