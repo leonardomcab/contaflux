@@ -41,8 +41,11 @@ export function CompanyWizard({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[95vh] overflow-y-auto sm:max-w-5xl">
         <DialogHeader>
-          <DialogTitle>Nova empresa</DialogTitle>
-          <DialogDescription>Cadastre um cliente do escritório.</DialogDescription>
+          <DialogTitle>Cadastrar empresa cliente</DialogTitle>
+          <DialogDescription>
+            Informe os dados da empresa e, se quiser, importe o plano de contas do Domínio e as
+            contas bancárias. Você revisa tudo antes de salvar.
+          </DialogDescription>
         </DialogHeader>
         {/* Desmontar ao fechar zera o assistente para o próximo cadastro. */}
         {open ? <WizardBody onDone={() => onOpenChange(false)} /> : null}
