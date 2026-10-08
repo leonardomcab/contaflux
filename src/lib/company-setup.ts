@@ -54,3 +54,34 @@ export function validateBankAccounts(drafts: BankAccountDraft[]): Map<string, st
 export function cnpjDigits(value: string | null | undefined): string {
   return (value ?? "").replace(/\D/g, "");
 }
+
+export const CNPJ_LENGTH = 14;
+export const CNPJ_MASKED_LENGTH = 18;
+
+/**
+ * Aplica a máscara 00.000.000/0000-00 conforme o usuário digita e descarta o excedente.
+ * Aceita o CNPJ alfanumérico da Receita (IN RFB 2.229/2024): letras nas 12 primeiras
+ * posições; os 2 dígitos verificadores são sempre numéricos.
+ */
+export function formatCnpj(value: string | null | undefined): string {
+  let clean = "";
+  for (const char of (value ?? "").toUpperCase()) {
+    if (clean.length === CNPJ_LENGTH) break;
+    if (clean.length < 12 ? /[0-9A-Z]/.test(char) : /\d/.test(char)) clean += char;
+  }
+  const parts = [
+    clean.slice(0, 2),
+    clean.slice(2, 5),
+    clean.slice(5, 8),
+    clean.slice(8, 12),
+    clean.slice(12),
+  ];
+  const separators = ["", ".", ".", "/", "-"];
+  return parts.map((part, i) => (part ? separators[i] + part : "")).join("");
+}
+
+/** O CNPJ é opcional, mas se for informado precisa estar completo. */
+export function isCnpjCompleteOrEmpty(value: string): boolean {
+  const length = formatCnpj(value).replace(/[./-]/g, "").length;
+  return length === 0 || length === CNPJ_LENGTH;
+}

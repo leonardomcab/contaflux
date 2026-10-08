@@ -6,6 +6,8 @@ import { Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   draftsFromSuggestions,
+  formatCnpj,
+  isCnpjCompleteOrEmpty,
   validateBankAccounts,
   type BankAccountDraft,
 } from "@/lib/company-setup";
@@ -24,8 +26,9 @@ import {
 import { StepBankAccounts } from "./step-bank-accounts";
 import { StepChartOfAccounts } from "./step-chart-of-accounts";
 import { StepCompany, type CompanyData } from "./step-company";
+import { StepReview } from "./step-review";
 
-const STEPS = ["Dados da empresa", "Plano de contas", "Contas bancárias"] as const;
+const STEPS = ["Dados da empresa", "Plano de contas", "Contas bancárias", "Revisão"] as const;
 
 export function CompanyWizard({
   open,
@@ -67,7 +70,7 @@ function WizardBody({ onDone }: { onDone: () => void }) {
       setCompany((current) => ({
         ...current,
         name: current.name.trim() ? current.name : (companyName ?? ""),
-        cnpj: current.cnpj.trim() ? current.cnpj : (cnpj ?? ""),
+        cnpj: current.cnpj.trim() ? current.cnpj : formatCnpj(cnpj),
       }));
     }
     setChart(next);
@@ -108,12 +111,14 @@ function WizardBody({ onDone }: { onDone: () => void }) {
     onError: (error: Error) => toast.error("Erro ao salvar", { description: error.message }),
   });
 
-  function finish() {
+  const companyValid = company.name.trim() !== "" && isCnpjCompleteOrEmpty(company.cnpj);
+
+  function goToReview() {
     if (bankErrors.size > 0) {
       setShowBankErrors(true);
       return;
     }
-    save.mutate();
+    setStep(3);
   }
 
   return (
@@ -153,6 +158,15 @@ function WizardBody({ onDone }: { onDone: () => void }) {
           suggested={suggestedFrom !== null && banks.length > 0}
         />
       ) : null}
+      {step === 3 ? (
+        <StepReview
+          company={company}
+          chart={chart}
+          banks={banks}
+          onEdit={setStep}
+          disabled={save.isPending}
+        />
+      ) : null}
 
       <DialogFooter className="gap-2">
         {step > 0 ? (
@@ -161,7 +175,7 @@ function WizardBody({ onDone }: { onDone: () => void }) {
           </Button>
         ) : null}
         {step === 0 ? (
-          <Button onClick={() => setStep(1)} disabled={!company.name.trim()}>
+          <Button onClick={() => setStep(1)} disabled={!companyValid}>
             Próximo
           </Button>
         ) : null}
@@ -170,8 +184,9 @@ function WizardBody({ onDone }: { onDone: () => void }) {
             {chart ? "Próximo" : "Pular"}
           </Button>
         ) : null}
-        {step === 2 ? (
-          <Button onClick={finish} disabled={save.isPending || !company.name.trim()}>
+        {step === 2 ? <Button onClick={goToReview}>Próximo</Button> : null}
+        {step === 3 ? (
+          <Button onClick={() => save.mutate()} disabled={save.isPending || !companyValid}>
             {save.isPending ? "Salvando..." : "Concluir"}
           </Button>
         ) : null}
