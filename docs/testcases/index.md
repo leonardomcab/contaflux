@@ -41,7 +41,7 @@ projeto; ao adicionar casos, continuar a partir de `CT074`.
 | [CT008](autenticacao.md#ct008---sair-do-sistema) | Sair do sistema | Autenticação | Alta | Positivo |
 | [CT009](empresas.md#ct009---lista-de-empresas-vazia) | Lista de empresas vazia | Empresas | Baixa | Borda |
 | [CT010](empresas.md#ct010---criar-empresa-apenas-com-os-dados-básicos) | Criar empresa apenas com os dados básicos | Empresas | Alta | Positivo |
-| [CT011](empresas.md#ct011---avançar-no-assistente-sem-informar-o-nome) | Avançar no assistente sem informar o nome | Empresas | Média | Negativo |
+| [CT011](empresas.md#ct011---validações-da-etapa-dados-da-empresa) | Validações da etapa Dados da empresa | Empresas | Média | Negativo |
 | [CT012](empresas.md#ct012---criar-empresa-com-conta-bancária) | Criar empresa com conta bancária | Empresas | Média | Positivo |
 | [CT013](empresas.md#ct013---conta-bancária-sem-apelido-bloqueia-a-conclusão) | Conta bancária sem apelido bloqueia a conclusão | Empresas | Média | Negativo |
 | [CT014](empresas.md#ct014---contas-bancárias-duplicadas-bloqueiam-a-conclusão) | Contas bancárias duplicadas bloqueiam a conclusão | Empresas | Média | Negativo |

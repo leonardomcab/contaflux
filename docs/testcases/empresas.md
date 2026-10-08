@@ -129,23 +129,25 @@ Validar o cadastro de uma empresa pelo assistente pulando as etapas opcionais.
 #### **Dados de Teste**
 
 - Nome: `Padaria Fictícia Ltda`
-- CNPJ: `11.111.111/0001-11`
+- CNPJ: `11111111000111` (digitado só com números)
 - Observações: `Cliente de teste`
 
 #### **Passos**
 
 | **Id** | **Ação** | **Resultado Esperado** |
 |--------|----------|------------------------|
-| 1 | Acessar `/empresas` e clicar em "Nova empresa" | Abre o diálogo "Nova empresa" com o texto "Cadastre um cliente do escritório." e as etapas "Dados da empresa", "Plano de contas" e "Contas bancárias", com a primeira destacada |
-| 2 | Preencher "Nome", "CNPJ" e "Observações" com os dados de teste | O botão "Próximo" fica habilitado |
+| 1 | Acessar `/empresas` e clicar em "Nova empresa" | Abre o diálogo "Cadastrar empresa cliente" com o texto "Informe os dados da empresa e, se quiser, importe o plano de contas do Domínio e as contas bancárias. Você revisa tudo antes de salvar." e as etapas "Dados da empresa", "Plano de contas", "Contas bancárias" e "Revisão", com a primeira destacada |
+| 2 | Preencher "Nome", "CNPJ" e "Observações" com os dados de teste | O "CNPJ" é formatado durante a digitação e fica `11.111.111/0001-11`; o botão "Próximo" fica habilitado |
 | 3 | Clicar em "Próximo" | A etapa "Plano de contas" é exibida com a área "Arraste o PDF do plano de contas do Domínio aqui ou clique para escolher" e o botão "Pular" |
 | 4 | Clicar em "Pular" | A etapa "Contas bancárias" é exibida com o texto "Nenhuma conta bancária." |
-| 5 | Clicar em "Concluir" | O botão mostra "Salvando..."; o toast "Empresa cadastrada" é exibido, o diálogo fecha e o sistema redireciona para `/empresas/<id da empresa>` |
-| 6 | Verificar o cabeçalho da página | O título "Padaria Fictícia Ltda" e o CNPJ `11.111.111/0001-11` são exibidos |
+| 5 | Clicar em "Próximo" | A etapa "Revisão" exibe "Confira os dados antes de concluir. Nada foi gravado ainda." e os blocos "Dados da empresa" (Nome `Padaria Fictícia Ltda`, CNPJ `11.111.111/0001-11`, Observações `Cliente de teste`), "Plano de contas" ("Nenhum plano de contas importado.") e "Contas bancárias" ("Nenhuma conta bancária."), cada um com o botão "Editar" |
+| 6 | Clicar em "Concluir" | O botão mostra "Salvando..."; o toast "Empresa cadastrada" é exibido, o diálogo fecha e o sistema redireciona para `/empresas/<id da empresa>` |
+| 7 | Verificar o cabeçalho da página | O título "Padaria Fictícia Ltda" e o CNPJ `11.111.111/0001-11` são exibidos |
 
 #### **Resultados Esperados**
 
 - A empresa é criada sem contas bancárias e sem plano de contas
+- Nada é gravado antes do clique em "Concluir" na etapa "Revisão"
 
 #### **Critérios de Aceitação**
 
@@ -154,7 +156,7 @@ Validar o cadastro de uma empresa pelo assistente pulando as etapas opcionais.
 
 ---
 
-### **CT011 - Avançar no assistente sem informar o nome**
+### **CT011 - Validações da etapa Dados da empresa**
 
 - **Módulo:** Empresas
 - **Rota:** `/empresas`
@@ -163,7 +165,8 @@ Validar o cadastro de uma empresa pelo assistente pulando as etapas opcionais.
 
 #### **Objetivo**
 
-Validar que o nome da empresa é obrigatório para avançar no assistente.
+Validar que o nome da empresa é obrigatório e que o CNPJ, quando informado, respeita a máscara e
+precisa estar completo para avançar no assistente.
 
 #### **Pré-Condições**
 
@@ -172,21 +175,25 @@ Validar que o nome da empresa é obrigatório para avançar no assistente.
 
 #### **Dados de Teste**
 
-- Nome: vazio e depois `   ` (somente espaços)
-- CNPJ: `22.222.222/0001-22`
+- Nome: vazio, depois `   ` (somente espaços) e depois `Empresa Fictícia Ltda`
+- CNPJ: `2222222200012299` (16 números, dois a mais que um CNPJ)
 
 #### **Passos**
 
 | **Id** | **Ação** | **Resultado Esperado** |
 |--------|----------|------------------------|
-| 1 | Acessar `/empresas` e clicar em "Nova empresa" | O diálogo "Nova empresa" é exibido na etapa "Dados da empresa" |
-| 2 | Preencher apenas o "CNPJ" | O botão "Próximo" continua desabilitado |
+| 1 | Acessar `/empresas` e clicar em "Nova empresa" | O diálogo "Cadastrar empresa cliente" é exibido na etapa "Dados da empresa" |
+| 2 | Digitar apenas o "CNPJ" com os dados de teste | O campo exibe `22.222.222/0001-22` e ignora os números excedentes; o botão "Próximo" continua desabilitado |
 | 3 | Preencher "Nome" com três espaços | O botão "Próximo" continua desabilitado |
-| 4 | Fechar o diálogo | Nenhum toast é exibido e nenhuma empresa nova aparece na lista |
+| 4 | Preencher "Nome" com `Empresa Fictícia Ltda` | O botão "Próximo" fica habilitado |
+| 5 | Apagar o final do "CNPJ" até ficar `22.222.222/000` e clicar em "Observações" | Abaixo do campo aparece "O CNPJ precisa ter 14 caracteres. Deixe em branco se não souber." e o botão "Próximo" fica desabilitado |
+| 6 | Apagar todo o "CNPJ" | A mensagem some e o botão "Próximo" volta a ficar habilitado |
+| 7 | Fechar o diálogo | Nenhum toast é exibido e nenhuma empresa nova aparece na lista |
 
 #### **Resultados Esperados**
 
 - Não é possível sair da primeira etapa sem um nome preenchido
+- O CNPJ é opcional, mas não é aceito pela metade e nunca passa de 14 caracteres
 
 #### **Critérios de Aceitação**
 
@@ -223,12 +230,15 @@ Validar o cadastro de uma conta bancária na última etapa do assistente.
 | 2 | Clicar em "Pular" | A etapa "Contas bancárias" exibe "Cadastre as contas bancárias da empresa. Esta etapa é opcional." |
 | 3 | Clicar em "Adicionar conta" | Surge uma linha com os campos "Apelido", "Código do banco" e "Número da conta" |
 | 4 | Preencher a linha com os dados de teste | Os campos ficam preenchidos, sem mensagem de erro |
-| 5 | Clicar em "Concluir" | O toast "Empresa cadastrada" é exibido e o sistema redireciona para a página da empresa |
-| 6 | Na página da empresa, abrir o seletor "Conta" | A opção "Banco Alfa" é listada além de "Todas" |
+| 5 | Clicar em "Próximo" | A etapa "Revisão" lista no bloco "Contas bancárias" a conta "Banco Alfa" com "Banco 0341 · Conta 12345-6" |
+| 6 | Clicar em "Editar" no bloco "Contas bancárias" | A etapa "Contas bancárias" volta a ser exibida com a linha preenchida |
+| 7 | Clicar em "Próximo" e depois em "Concluir" | O toast "Empresa cadastrada" é exibido e o sistema redireciona para a página da empresa |
+| 8 | Na página da empresa, abrir o seletor "Conta" | A opção "Banco Alfa" é listada além de "Todas" |
 
 #### **Resultados Esperados**
 
 - A empresa é criada com uma conta bancária "Banco Alfa"
+- Voltar da revisão pelo botão "Editar" mantém os dados já preenchidos
 
 #### **Critérios de Aceitação**
 
@@ -263,8 +273,9 @@ Validar que toda conta bancária adicionada no assistente precisa de apelido.
 |--------|----------|------------------------|
 | 1 | Clicar em "Nova empresa", preencher "Nome", clicar em "Próximo" e depois em "Pular" | A etapa "Contas bancárias" é exibida |
 | 2 | Clicar em "Adicionar conta" e preencher só "Código do banco" e "Número da conta" | Os campos ficam preenchidos |
-| 3 | Clicar em "Concluir" | Abaixo da linha aparece "Informe um apelido para a conta."; o diálogo continua aberto e nenhum toast é exibido |
-| 4 | Preencher "Apelido" com `Banco Alfa` e clicar em "Concluir" | O toast "Empresa cadastrada" é exibido e o sistema abre a página da empresa |
+| 3 | Clicar em "Próximo" | Abaixo da linha aparece "Informe um apelido para a conta."; o assistente continua na etapa "Contas bancárias" e nenhum toast é exibido |
+| 4 | Preencher "Apelido" com `Banco Alfa` e clicar em "Próximo" | A etapa "Revisão" é exibida com a conta "Banco Alfa" |
+| 5 | Clicar em "Concluir" | O toast "Empresa cadastrada" é exibido e o sistema abre a página da empresa |
 
 #### **Resultados Esperados**
 
@@ -304,8 +315,9 @@ Validar que o assistente não aceita duas contas com o mesmo banco e número.
 |--------|----------|------------------------|
 | 1 | Clicar em "Nova empresa", preencher "Nome", clicar em "Próximo" e depois em "Pular" | A etapa "Contas bancárias" é exibida |
 | 2 | Clicar duas vezes em "Adicionar conta" e preencher as duas linhas com os dados de teste | Duas linhas preenchidas são exibidas |
-| 3 | Clicar em "Concluir" | Abaixo da segunda linha aparece `Mesmo banco e número de "Conta principal".`; o diálogo continua aberto |
-| 4 | Clicar em "Remover Conta repetida" e depois em "Concluir" | O toast "Empresa cadastrada" é exibido |
+| 3 | Clicar em "Próximo" | Abaixo da segunda linha aparece `Mesmo banco e número de "Conta principal".`; o assistente continua na etapa "Contas bancárias" |
+| 4 | Clicar em "Remover Conta repetida" e depois em "Próximo" | A etapa "Revisão" lista apenas a conta "Conta principal" |
+| 5 | Clicar em "Concluir" | O toast "Empresa cadastrada" é exibido |
 
 #### **Resultados Esperados**
 
@@ -349,8 +361,9 @@ contas bancárias de "Bancos conta movimento".
 | 2 | Clicar na área de upload e escolher `plano-dominio-ficticio.pdf` | A prévia mostra "plano-dominio-ficticio.pdf · 9 contas lidas · 9 serão importadas" e a tabela com as colunas "Cód.", "Classificação", "Descrição", "T" e "Tipo"; o botão do rodapé passa a ser "Próximo" |
 | 3 | Clicar em "Voltar" | O "Nome" continua `Comércio Fictício` e o "CNPJ" foi preenchido com `11.222.333/0001-81` |
 | 4 | Clicar em "Próximo" duas vezes | A etapa "Contas bancárias" exibe o texto 'Estas contas foram encontradas em "Bancos conta movimento" do plano de contas. Revise antes de concluir.' e uma linha com Apelido `BANCO ALFA - AG 1234` e Número da conta `12345-6` |
-| 5 | Preencher "Código do banco" com `0341` e clicar em "Concluir" | O toast "Empresa cadastrada" é exibido e o sistema abre a página "Comércio Fictício" |
-| 6 | Clicar em "Plano de contas" no menu lateral | A tabela lista as 9 contas; ATIVO, ATIVO CIRCULANTE, BANCOS CONTA MOVIMENTO, RECEITAS e DESPESAS têm o selo "Sintética" |
+| 5 | Preencher "Código do banco" com `0341` e clicar em "Próximo" | A etapa "Revisão" exibe o CNPJ `11.222.333/0001-81`, o bloco "Plano de contas" com "plano-dominio-ficticio.pdf · 9 contas serão importadas" e a conta "BANCO ALFA - AG 1234" com "Banco 0341 · Conta 12345-6" |
+| 6 | Clicar em "Concluir" | O toast "Empresa cadastrada" é exibido e o sistema abre a página "Comércio Fictício" |
+| 7 | Clicar em "Plano de contas" no menu lateral | A tabela lista as 9 contas; ATIVO, ATIVO CIRCULANTE, BANCOS CONTA MOVIMENTO, RECEITAS e DESPESAS têm o selo "Sintética" |
 
 #### **Resultados Esperados**
 
