@@ -12,7 +12,7 @@ Login → Escolher empresa cliente → Enviar extrato OFX
    → Lançamentos importados (data, descrição, valor, tipo)
    → Regras aplicam categoria automaticamente
    → Revisão/ajuste manual do que ficou pendente
-   → Exportação (CSV/XLSX) do período classificado
+   → Exportação do período classificado (TXT para o Domínio ou CSV)
 ```
 
 ## Stack
@@ -49,5 +49,6 @@ O schema completo (tabelas e políticas de RLS) está em
 ## Escopo atual / próximos passos
 
 - Importação via OFX implementada; importação via PDF ainda não.
-- Exportação em CSV/XLSX com layout de colunas configurável (não amarrada a
-  um sistema contábil específico).
+- Exportação em TXT no leiaute de importação de lançamentos do Domínio
+  (débito e crédito pelo código reduzido, com a conta contábil vinculada a
+  cada conta bancária como contrapartida) e em CSV para planilha.

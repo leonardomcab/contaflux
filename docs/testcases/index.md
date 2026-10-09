@@ -3,7 +3,7 @@
 Casos gerados a partir de `docs/prompts/prompt-testcase-generator.md`, com base no código atual de
 `src/routes/` e `supabase/migrations/`. Todo caso parte de um banco resetado
 (`npx supabase db reset`) e cria o próprio estado nas pré-condições. Os IDs são únicos em todo o
-projeto; ao adicionar casos, continuar a partir de `CT074`.
+projeto; ao adicionar casos, continuar a partir de `CT078`.
 
 ## Arquivos
 
@@ -15,7 +15,7 @@ projeto; ao adicionar casos, continuar a partir de `CT074`.
 | [plano-de-contas.md](plano-de-contas.md) | Plano de contas | CT031 a CT039 |
 | [regras.md](regras.md) | Regras | CT040 a CT052 |
 | [lancamentos.md](lancamentos.md) | Lançamentos | CT053 a CT062 |
-| [exportacao.md](exportacao.md) | Exportação | CT063 a CT068 |
+| [exportacao.md](exportacao.md) | Exportação | CT063 a CT068, CT074 a CT077 |
 | [isolamento-de-dados.md](isolamento-de-dados.md) | Isolamento de dados | CT069 a CT073 |
 
 ## Pontos de atenção
@@ -23,7 +23,6 @@ projeto; ao adicionar casos, continuar a partir de `CT074`.
 - **Isolamento de dados:** as políticas de RLS atuais liberam todos os dados para qualquer usuário
   autenticado (`USING (true)`). CT070, CT071 e CT072 descrevem o comportamento exigido e devem falhar
   até que as políticas sejam restringidas.
-- **Exportação XLSX:** citada no `README.md`, mas ainda não existe no código; só há casos de CSV.
 - **Massa de dados:** extratos OFX e PDFs do plano de contas são fictícios e estão descritos na seção
   "Dados fictícios" de cada arquivo. Nunca usar arquivos de `examples/privado/`.
 
@@ -104,3 +103,7 @@ projeto; ao adicionar casos, continuar a partir de `CT074`.
 | [CT071](isolamento-de-dados.md#ct071---usuário-não-acessa-empresa-de-outro-usuário-pela-url) | Usuário não acessa empresa de outro usuário pela URL | Isolamento de dados | Alta | Permissão |
 | [CT072](isolamento-de-dados.md#ct072---usuário-não-altera-dados-da-empresa-de-outro-usuário) | Usuário não altera dados da empresa de outro usuário | Isolamento de dados | Alta | Permissão |
 | [CT073](isolamento-de-dados.md#ct073---voltar-no-navegador-após-sair-não-exibe-dados) | Voltar no navegador após sair não exibe dados | Isolamento de dados | Média | Permissão |
+| [CT074](exportacao.md#ct074---exportar-txt-domínio-do-mês) | Exportar TXT Domínio do mês | Exportação | Alta | Positivo |
+| [CT075](exportacao.md#ct075---lançamentos-sem-categoria-ficam-fora-do-txt) | Lançamentos sem categoria ficam fora do TXT | Exportação | Média | Borda |
+| [CT076](exportacao.md#ct076---conta-sem-código-reduzido-bloqueia-o-txt) | Conta sem código reduzido bloqueia o TXT | Exportação | Alta | Negativo |
+| [CT077](exportacao.md#ct077---empresa-sem-cnpj-bloqueia-o-txt) | Empresa sem CNPJ bloqueia o TXT | Exportação | Média | Negativo |
