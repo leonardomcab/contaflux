@@ -26,8 +26,13 @@ export function toCsv(rows: (string | number | null)[][]): string {
     .join("\r\n");
 }
 
-export function downloadFile(name: string, content: string, mime = "text/csv;charset=utf-8") {
-  const blob = new Blob(["\uFEFF" + content], { type: mime });
+export function downloadFile(
+  name: string,
+  content: string,
+  mime = "text/csv;charset=utf-8",
+  { bom = true }: { bom?: boolean } = {},
+) {
+  const blob = new Blob([bom ? "\uFEFF" + content : content], { type: mime });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;
