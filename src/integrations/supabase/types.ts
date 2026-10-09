@@ -22,6 +22,7 @@ export type Database = {
           created_at: string
           id: string
           label: string
+          ledger_category_id: string | null
         }
         Insert: {
           account_number?: string | null
@@ -30,6 +31,7 @@ export type Database = {
           created_at?: string
           id?: string
           label: string
+          ledger_category_id?: string | null
         }
         Update: {
           account_number?: string | null
@@ -38,6 +40,7 @@ export type Database = {
           created_at?: string
           id?: string
           label?: string
+          ledger_category_id?: string | null
         }
         Relationships: [
           {
@@ -45,6 +48,13 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_accounts_ledger_category_id_fkey"
+            columns: ["ledger_category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
             referencedColumns: ["id"]
           },
         ]
